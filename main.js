@@ -2,6 +2,7 @@ import readline from 'readline';
 import { EOL, homedir } from 'os';
 import { getUsername } from './modules/getUsername.js';
 import { up } from './modules/up.js';
+import { cd } from './modules/cd.js'
 
 const username = getUsername();
 let currentDir = homedir();
@@ -14,14 +15,13 @@ const rl = readline.createInterface({
 });
 
 const prompt = () => {
-  rl.setPrompt(`You are currently in ${currentDir}${EOL}`);
+  rl.setPrompt(`You are currently in ${currentDir}${EOL}${EOL}`);
   rl.prompt();
-  process.stdout.write(`Type command below${EOL}`);
 };
 
 prompt();
 
-rl.on('line', (command) => {
+rl.on('line', async (command) => {
   process.stdout.write(EOL);
   if (command === '.exit') {
     exit();
@@ -29,6 +29,24 @@ rl.on('line', (command) => {
     const result = up(currentDir);
     currentDir = result.data;
     process.stdout.write(result.message);
+  } else if (command.startsWith('cd')) {
+    const targetPath = command.slice(3);
+
+    if (targetPath === '') {
+      process.stdout.write(`Missing mandatory directory path.${EOL}`);
+    } else if (command[2] !== ' ') {
+      process.stdout.write(`Invalid command${EOL}`);
+    } else {
+      const result = await cd(currentDir, targetPath);
+      
+      if (result.success) {
+        currentDir = result.data;
+        process.stdout.write(result.message);
+      } else {
+        process.stdout.write(result.message);
+      }
+    }
+
   } else {
     process.stdout.write(`Invalid command${EOL}`);
   }
