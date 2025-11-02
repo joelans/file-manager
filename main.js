@@ -1,6 +1,7 @@
 import readline from 'readline';
 import { EOL, homedir } from 'os';
 import { getUsername } from './modules/getUsername.js';
+import { up } from './modules/up.js';
 
 const username = getUsername();
 let currentDir = homedir();
@@ -12,17 +13,26 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-rl.setPrompt(`You are currently in ${currentDir}${EOL}`);
-rl.prompt();
+const prompt = () => {
+  rl.setPrompt(`You are currently in ${currentDir}${EOL}`);
+  rl.prompt();
+  process.stdout.write(`Type command below${EOL}`);
+};
+
+prompt();
 
 rl.on('line', (command) => {
+  process.stdout.write(EOL);
   if (command === '.exit') {
     exit();
+  } if (command === 'up') {
+    const result = up(currentDir);
+    currentDir = result.data;
+    process.stdout.write(result.message);
   } else {
-
-
-    rl.prompt();
+    process.stdout.write(`Invalid command${EOL}`);
   }
+  prompt();
 });
 
 rl.on('SIGINT', () => {
