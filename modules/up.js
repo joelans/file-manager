@@ -1,22 +1,21 @@
 import { resolve } from 'node:path';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
-const up = (currentDir) => {
+const up = (command, currentDir) => {
+  if (command !== 'up') {
+    process.stdout.write(`No attributes are needed for the 'up' command${EOL}`);
+    return currentDir;
+  }
+
   const upperDir = resolve(currentDir, '..');
 
   if (upperDir === currentDir) {
-    return {
-      success: false,
-      message: `You are at the root directory. Cannot go up${EOL}`,
-      data: currentDir
-    };
+    process.stdout.write(`You are at the root directory. Cannot go up${EOL}`);
+    return currentDir;
   }
 
-  return {
-    success: true,
-    message: `Moved up${EOL}`,
-    data: upperDir
-  };
+  process.stdout.write(`Moved up${EOL}`);
+  return upperDir;
 }
 
 export { up };

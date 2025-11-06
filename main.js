@@ -27,10 +27,8 @@ rl.on('line', async (command) => {
   command = command.trim();
   if (command === '.exit') {
     exit();
-  } if (command === 'up') {
-    const result = up(currentDir);
-    currentDir = result.data;
-    process.stdout.write(result.message);
+  } if (command.startsWith('up')) {
+    currentDir = up(command, currentDir);
   } else if (command.startsWith('cd')) {
     const targetPath = command.slice(3);
 
