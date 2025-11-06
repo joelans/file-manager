@@ -1,11 +1,12 @@
 const getUsername = () => {
   const args = process.argv.slice(2);
+  let username = '';
   const usernameArg = args.find(arg => arg.startsWith('--username'));
   if (usernameArg) {
-    return usernameArg.substring(11);
+    username = usernameArg.substring(11);
   }
 
-  return 'Anonymous';
+  return username ? username : 'Anonymous';
 };
 
 export { getUsername };
