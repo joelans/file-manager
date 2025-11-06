@@ -1,8 +1,9 @@
-import readline from 'readline';
-import { EOL, homedir } from 'os';
+import readline from 'node:readline';
+import { EOL, homedir } from 'node:os';
 import { getUsername } from './modules/getUsername.js';
 import { up } from './modules/up.js';
-import { cd } from './modules/cd.js'
+import { cd } from './modules/cd.js';
+import { ls } from './modules/ls.js';
 
 const username = getUsername();
 let currentDir = homedir();
@@ -23,6 +24,7 @@ prompt();
 
 rl.on('line', async (command) => {
   process.stdout.write(EOL);
+  command = command.trim();
   if (command === '.exit') {
     exit();
   } if (command === 'up') {
@@ -46,7 +48,8 @@ rl.on('line', async (command) => {
         process.stdout.write(result.message);
       }
     }
-
+  } else if (command.startsWith('ls')) {
+    await ls(command, currentDir);
   } else {
     process.stdout.write(`Invalid command${EOL}`);
   }
